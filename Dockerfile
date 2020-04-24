@@ -1,19 +1,7 @@
-FROM node:10.15.3-jessie
-LABEL maintainer="dsharapkou"
+FROM timbru31/java-node:8
 
-# Install OpenJDK (Java)
-ARG CHROME_VERSION="google-chrome-stable"
-
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb http://http.debian.net/debian jessie-backports main" >> /etc/apt/sources.list \
-    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list \
-    && apt-get -qq update \
-    && apt-get -qq install -o=Dpkg::Use-Pty=0 -t jessie-backports \
-        openjdk-8-jdk \
-        ${CHROME_VERSION:-google-chrome-stable} \
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable=81.0.4044.122-1 \
     && rm -rf /var/lib/apt/lists/*
-
-
-# When you execute `docker run -it dsharapkou/node-java-chrome-e2e`
-# you’ll get dropped into a usable bash shell
-CMD ["/bin/bash"]
